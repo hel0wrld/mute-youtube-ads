@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       hel0wrld
-// @match        *://www.youtube.com/watch?*
+// @match        *://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=tampermonkey.net
 // @grant        none
 // ==/UserScript==
@@ -37,6 +37,9 @@
             var mute_button = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > span > button")
             mute_button.click()
 
+            var playButton = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > button")
+            playButton.click()
+
             var tryToSkipInterval = setInterval(() => {
                 tryToSkip();
 
@@ -54,11 +57,10 @@
     }
 
     if (videoElement) {
-        // Check if the video element has already loaded
-        if (videoElement.readyState >= 2) { // Check if the video has metadata (readyState 2)
+        
+        if (videoElement.readyState >= 2) { 
             videoLoadedHandler();
-        } else {
-            // If the video hasn't loaded yet, add a load event listener
+        } else {       
             videoElement.addEventListener('loadedmetadata', videoLoadedHandler);
         }
     } else {
