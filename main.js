@@ -21,49 +21,44 @@
     // detects if an ad is being played
 
     function tryToSkip() {
-        var skipButton = document.querySelector("button.ytp-ad-skip-button.ytp-button")
-        if(skipButton == null) return
-        skipButton.click()
+        let skipButton = document.querySelector("button.ytp-ad-skip-button.ytp-button");
+        if (skipButton == null) return;
+        skipButton.click();
     }
 
-    var videoElement = document.querySelector('.video-stream.html5-main-video');
-    function videoLoadedHandler() {
-        // console.log('Video element has loaded.');
+    const container = document.querySelector('#container.style-scope.ytd-player');
+    const div = container.querySelector('div[class*="html5-video-player"]');
 
-        if (document.querySelector("div.ad-showing")) {
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const className = div.getAttribute('class');
 
-            console.log("ad detected!!")
+                // Check if the class name contains the string "ad-showing".
+                if (className.includes('ad-showing')) {
+                    // console.log('Yes');
 
-            var mute_button = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > span > button")
-            mute_button.click()
+                    let muteButton = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > span > button");
+                    muteButton.click();
 
-            var playButton = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > button")
-            playButton.click()
+                    let tryToSkipInterval = setInterval(() => {
+                        tryToSkip();
 
-            var tryToSkipInterval = setInterval(() => {
-                tryToSkip();
+                        if (document.querySelector("div.ad-showing") == null) {
+                            // console.log('ad skipped :)');
+                            clearInterval(tryToSkipInterval);
+                        }
+                    }, 1000);
 
-                if(document.querySelector("div.ad-showing") == null) {
-                    clearInterval(tryToSkipInterval)
-                    console.log('ad skipped :)')
-                    mute_button.click()
-                    return
+                    muteButton.click()
+
+                } else {
+                    // console.log('No');
                 }
-            }, 1000);
+            }
         }
-        else {
-            console.log("no ads :)")
-        }
-    }
+    });
 
-    if (videoElement) {
-        
-        if (videoElement.readyState >= 2) { 
-            videoLoadedHandler();
-        } else {       
-            videoElement.addEventListener('loadedmetadata', videoLoadedHandler);
-        }
-    } else {
-        console.log('Video element does not exist.');
-    }
+    observer.observe(div, { attributes: true });
+
 })();
