@@ -1,4 +1,5 @@
 # skip-youtube
+UPDATE: this project has been discontinued and may not work!
 i created this script to skip/mute yt ads
 ## better than u-block origin?
 obviously no. this just mutes the ad until a skip button appears. once that appears, the ad automatically skips\
